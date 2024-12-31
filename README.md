@@ -1,9 +1,7 @@
 # EventHallusion
 EventHallusion is the first benchmark that focuses on the evaluation of event hallucinations in Video LLMs. This repository includes the code and benchmark data of our paper "[EventHallusion: Diagnosing Event Hallucinations in Video LLMs](https://arxiv.org/abs/2409.16597)", by Jiacheng Zhang, Yang Jiao, Shaoxiang Chen, Jingjing Chen, and Yu-Gang Jiang.
 
-<p align="center">
-  <img src="assets/example.png" alt="示例图片" width="500"/>
-</p>
+
 
 ## Update
 - [x] [2024/09/24] The GitHub repo of EventHalluion is created. The code and [data](https://drive.google.com/file/d/1IPmx6Y80UrXwVPmZJh6zjCPHtlsw4p9n/view?usp=drive_link) for evaluation are released.

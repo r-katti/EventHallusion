@@ -109,7 +109,7 @@ if __name__ == "__main__":
     
     # Loading questions
     question_paths = {
-        "interleave": "../../../../questions/interleave_questions.json",
+        "mix": "../../../../questions/mix_questions.json",
         "entire": "../../../../questions/entire_questions.json",
         "misleading": "../../../../questions/misleading_questions.json"
     }
@@ -138,13 +138,14 @@ if __name__ == "__main__":
                 video_path = os.path.join(args.video_path, split, f"{vid}.mp4")
                 
                 ### detailed description
-                try:
-                    desc_inp = "Please describe this video in detail."
-                    pred_description = get_model_output(model, processor['video'], tokenizer, video_path, desc_inp, args)
-                except Exception as e: 
-                    print (f"Inference error: {video_path}, Error Detail: {e}")
-                    pred_description = ''
-                video_info_with_predictions['desc'] = pred_description
+                if split != 'misleading':
+                    try:
+                        desc_inp = "Please describe this video in detail."
+                        pred_description = get_model_output(model, processor['video'], tokenizer, video_path, desc_inp, args)
+                    except Exception as e: 
+                        print (f"Inference error: {video_path}, Error Detail: {e}")
+                        pred_description = ''
+                    video_info_with_predictions['desc'] = pred_description
 
                 ### binary classification
                 try:

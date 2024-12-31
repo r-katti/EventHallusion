@@ -113,7 +113,7 @@ if __name__ == "__main__":
     # Loading questions
     question_paths = {
         "entire": "./questions/entire_questions.json",
-        "interleave": "./questions/interleave_questions.json",
+        "mix": "./questions/mix_questions.json",
         "misleading": "./questions/misleading_questions.json"
     }
 
@@ -142,14 +142,15 @@ if __name__ == "__main__":
                 base64Frames = load_video_base64(video_path)  
                 
                 ### detailed description
-                try:
-                    # video_llm_pred = run_inference(args, tokenizer, model, image_processor, context_len, video_path, inp)
-                    desc_inp = "Please describe this video in detail."
-                    pred_description = process_description(vid, base64Frames, api_key, desc_inp)
-                except Exception as e: 
-                    print (f"Inference error: {video_path}, Error Detail: {e}")
-                    pred_description = ''
-                video_info_with_predictions['desc'] = pred_description
+                if split != 'misleading':
+                    try:
+                        # video_llm_pred = run_inference(args, tokenizer, model, image_processor, context_len, video_path, inp)
+                        desc_inp = "Please describe this video in detail."
+                        pred_description = process_description(vid, base64Frames, api_key, desc_inp)
+                    except Exception as e: 
+                        print (f"Inference error: {video_path}, Error Detail: {e}")
+                        pred_description = ''
+                    video_info_with_predictions['desc'] = pred_description
                 
                 ### binary classification
                 try:

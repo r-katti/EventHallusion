@@ -2,7 +2,6 @@ import json
 import os
 import argparse
 
-from constants import *
 
 def extract_pred(video_llm_pred):
     if video_llm_pred is None:
@@ -55,25 +54,30 @@ def main(predictions):
                 if gt_answer == pred:
                     ques_correct += 1
             
-            gpt_judge = video_info_with_qa['judgement']
-            gpt_judge_processed = extract_yes_no_gpt(gpt_judge)
+            if split != 'misleading':
+                gpt_judge = video_info_with_qa['judgement']
+                gpt_judge_processed = extract_yes_no_gpt(gpt_judge)
 
-            if gpt_judge_processed is None:
-                gpt_not_match += 1
-                
-            if gpt_judge_processed == "yes":
-                desc_correct += 1
+                if gpt_judge_processed is None:
+                    gpt_not_match += 1
+                    
+                if gpt_judge_processed == "yes":
+                    desc_correct += 1
 
         total_ques += ques_cnt
         total_ques_correct += ques_correct
-        total_videos += video_cnt
+        if split != 'misleading':
+            total_videos += video_cnt
         total_desc_correct += desc_correct
 
 
-        print (f"{split} ques: {ques_cnt}, qs correct: {ques_correct}, qs acc: {ques_correct / ques_cnt}")
-        print (f"{split} videos: {video_cnt}, desc correct: {desc_correct}, desc acc: {desc_correct / video_cnt}")
-    print (f"overall: ques: {total_ques}, qs correct: {total_ques_correct}, qs acc: {total_ques_correct / total_ques}")
-    print (f"overall: desc: {total_videos}, desc correct: {total_desc_correct}, desc acc: {total_desc_correct / total_videos}")
+        print (f"{split} ques numbers: {ques_cnt}, qs correct: {ques_correct}, qs acc: {ques_correct / ques_cnt}")
+        if split != 'misleading':
+            print (f"{split} video numbers: {video_cnt}, desc correct: {desc_correct}, desc acc: {desc_correct / video_cnt}")
+        else:
+            print (f"{split} video numbers: {video_cnt}")
+    print (f"overall: ques numbers: {total_ques}, qs correct: {total_ques_correct}, qs acc: {total_ques_correct / total_ques}")
+    print (f"overall: desc numbers: {total_videos}, desc correct: {total_desc_correct}, desc acc: {total_desc_correct / total_videos}")
     print (f"Not matching rate: ques: {ques_not_match / total_ques}, desc: {gpt_not_match / total_videos}")
 
 

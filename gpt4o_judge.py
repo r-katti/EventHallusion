@@ -9,7 +9,7 @@ from constants import *
 def get_chat_gpt_response(prompt, api_key, max_retries=5, retry_delay=2):
     url = "https://api.openai.com/v1/chat/completions"
     headers = {
-        "Authorization": api_key,
+        "Authorization": f"Bearer {api_key}",
         "Content-Type": "application/json"
     }
     data = {
@@ -39,9 +39,10 @@ def get_chat_gpt_response(prompt, api_key, max_retries=5, retry_delay=2):
                 return {"error": str(e)}
 
 
-def process_description(video_key, video_data, api_key, prompt): 
+def process_description(video_key, video_data, api_key, prompt, delay_between_requests):
     response = get_chat_gpt_response(prompt, api_key)
-    
+    time.sleep(delay_between_requests)
+
     if 'error' in response:
         video_data['judgement'] = ''
         print(f"video processing: {video_key} fail.")
@@ -54,7 +55,7 @@ def process_description(video_key, video_data, api_key, prompt):
 
 
 
-def main(json_file_path, api_key, output_file_path):
+def main(json_file_path, api_key, output_file_path, delay_between_requests):
     try:
         with open(json_file_path, 'r') as f:
             data = json.load(f)
@@ -78,7 +79,7 @@ def main(json_file_path, api_key, output_file_path):
             else:
                 prompt = misleading.format(desc, video_data['event_info']['caption'])
                  
-            return_video_key = process_description(video_key, video_data, api_key, prompt)
+            return_video_key = process_description(video_key, video_data, api_key, prompt, delay_between_requests)
             if return_video_key is not None:
                 error_key.append(return_video_key)
                 
@@ -94,14 +95,15 @@ def main(json_file_path, api_key, output_file_path):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--json_file_path", type=str, default=None)
-    parser.add_argument("--output_file_path", type=str, default=None)
+    parser.add_argument("--json_file_path", type=str, required=True)
+    parser.add_argument("--output_file_path", type=str, required=True)
+    parser.add_argument("--delay_between_requests", type=int, default=0)
+    parser.add_argument("--api_key", type=str, required=True)
     args = parser.parse_args()
-
-    ### your api_key here
-    api_key = ""
 
     json_file_path = args.json_file_path
     output_file_path = args.output_file_path
+    delay_between_requests = args.delay_between_requests
+    api_key = args.api_key
 
-    main(json_file_path, api_key, output_file_path)
+    main(json_file_path, api_key, output_file_path, delay_between_requests)
